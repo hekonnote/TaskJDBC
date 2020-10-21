@@ -30,7 +30,8 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
-    public UserDaoJDBCImpl() {}
+    public UserDaoJDBCImpl() {
+    }
 
     public void createUsersTable() {
         String createTableQuery = "CREATE TABLE users" +
@@ -40,15 +41,17 @@ public class UserDaoJDBCImpl implements UserDao {
                 " age TINYINT NOT NULL, " +
                 " PRIMARY KEY (id))";
         try {
-            statement.executeUpdate(createTableQuery);
-        } catch (SQLException e) {}
+            getStatement().executeUpdate(createTableQuery);
+        } catch (SQLException e) {
+        }
     }
 
     public void dropUsersTable() {
         String dropQuery = "DROP TABLE users";
         try {
             getStatement().executeUpdate(dropQuery);
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+        }
     }
 
     public void saveUser(String name, String lastName, byte age) {
@@ -87,7 +90,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> userslist = new ArrayList<>();
         try {
-            ResultSet result = statement.executeQuery(
+            ResultSet result = getStatement().executeQuery(
                     "SELECT * FROM users");
 
             while (result.next()) {
