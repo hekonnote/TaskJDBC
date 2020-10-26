@@ -21,9 +21,9 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             statement = connection.createStatement();
             preparedStatement = connection.prepareStatement(
-                    "INSERT users (name, lastName, age) VALUES (?, ?, ?)");
+                    "INSERT user (name, lastName, age) VALUES (?, ?, ?)");
             preparedStatement2 = connection.prepareStatement(
-                    "DELETE FROM users WHERE id = ?");
+                    "DELETE FROM user WHERE id = ?");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String createTableQuery = "CREATE TABLE users" +
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS user" +
                 "(id INTEGER NOT NULL AUTO_INCREMENT, " +
                 " name VARCHAR(50) NOT NULL, " +
                 " lastName VARCHAR (50) NOT NULL, " +
@@ -43,14 +43,17 @@ public class UserDaoJDBCImpl implements UserDao {
         try {
             getStatement().executeUpdate(createTableQuery);
         } catch (SQLException e) {
+            e.printStackTrace();
+
         }
     }
 
     public void dropUsersTable() {
-        String dropQuery = "DROP TABLE users";
+        String dropQuery = "DROP TABLE IF EXISTS user";
         try {
             getStatement().executeUpdate(dropQuery);
         } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -69,7 +72,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void printNameSaved(Statement statement) {
         try {
             ResultSet result = getStatement().executeQuery(
-                    "SELECT name FROM users WHERE id = LAST_INSERT_ID()");
+                    "SELECT name FROM user WHERE id = LAST_INSERT_ID()");
             while (result.next()) {
                 System.out.println("User с именем – " + result.getString("name") + " добавлен в базу данных.");
             }
@@ -91,7 +94,7 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> userslist = new ArrayList<>();
         try {
             ResultSet result = getStatement().executeQuery(
-                    "SELECT * FROM users");
+                    "SELECT * FROM user");
 
             while (result.next()) {
                 userslist.add(new User(
@@ -106,7 +109,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        String cleanTableQuery = "TRUNCATE TABLE users";
+        String cleanTableQuery = "TRUNCATE TABLE user";
         try {
             getStatement().executeUpdate(cleanTableQuery);
         } catch (SQLException e) {
