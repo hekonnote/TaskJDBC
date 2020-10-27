@@ -1,8 +1,8 @@
 package jm.task.core.jdbc;
 
+import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserServiceImpl;
-
-import java.sql.SQLException;
+import jm.task.core.jdbc.util.Util;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,37 +13,14 @@ public class Main {
         userService.saveUser("Pit2", "ccccc", (byte) 35);
         userService.saveUser("Pit3", "eeeee", (byte) 40);
         userService.saveUser("Pit4", "hhhhh", (byte) 45);
-        System.out.println(userService.getAllUsers().toString());
+        for (User user : userService.getAllUsers()) {
+            System.out.println(user);
+        }
+//        userService.getAllUsers().forEach(System.out::println);// не работает, спросить почему у Семена
+//        Error:(19, 55) java: method references are not supported in -source 7
+//        (use -source 8 or higher to enable method references)
         userService.cleanUsersTable();
         userService.dropUsersTable();
-        try {
-            userService.getUserDaoJDBC().getConnection().close();
-            userService.getUserDaoJDBC().getStatement().close();
-            userService.getUserDaoJDBC().getPreparedStatement().close();
-            userService.getUserDaoJDBC().getPreparedStatement2().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-//        try (Connection connection = Util.getConnection();
-//             Statement statement = connection.createStatement();
-//             PreparedStatement preparedStatement = connection.prepareStatement(
-//                     "INSERT users (name, lastName, age) VALUES (?, ?, ?)");
-//             PreparedStatement preparedStatement2 = connection.prepareStatement(
-//                     "DELETE FROM users WHERE id = ?")) {
-//            UserServiceImpl userService = new UserServiceImpl();
-//            userService.createUsersTable();
-//            userService.saveUser("Pit1", "ddddd", (byte) 30);
-//            userService.saveUser("Pit2", "ccccc", (byte) 35);
-//            userService.saveUser("Pit3", "eeeee", (byte) 40);
-//            userService.saveUser("Pit4", "hhhhh", (byte) 45);
-//            System.out.println(userService.getAllUsers().toString());
-//            userService.cleanUsersTable();
-//            userService.dropUsersTable();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
+        Util.closeConnection();
     }
 }
